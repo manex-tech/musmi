@@ -1,8 +1,9 @@
 # Notices
 
 ## Musmi‘ (مُسْمِع)
-Musmi‘ is an open-source Quran Reviewer, Hifz companion, and Musabaqah platform built on top of the **Tilawa** recitation engine.
-- Base engine author: **Yazin Alirhayim** and contributors ([github.com/yazinsai/tilawa](https://github.com/yazinsai/tilawa)).
+Musmi‘ is an open-source Quran Reviewer, Hifz companion, and Musabaqah platform.
+- **Creator & Maintainer:** Manex Technologies ([github.com/manex-tech](https://github.com/manex-tech))
+- **Base Recitation Engine:** Tilawa by **Yazin Alirhayim** and contributors ([github.com/yazinsai/tilawa](https://github.com/yazinsai/tilawa)).
 - Licensed under the **MIT License**.
 
 This repository's code is MIT-licensed (`LICENSE`). The notices below cover the data, models and libraries `@tilawa/core` is built from or ships, plus the 0.x assets. The old Python harness `lab/` was removed from the tree; it is in the history at [`2a29b3b`](https://github.com/yazinsai/tilawa/tree/2a29b3b/lab).

@@ -1,6 +1,8 @@
 # Musmi‘ (مُسْمِع)
 
 > An intelligent, offline-capable Quran Reviewer, Hifz Companion, and Musabaqah (Competition) Simulator.
+> 
+> Developed by **[Manex Technologies](https://github.com/manex-tech)** (`@manex-tech`).  
 > Built on top of the open-source [Tilawa](https://github.com/yazinsai/tilawa) recitation engine created by [Yazin Alirhayim](https://github.com/yazinsai) and contributors.
 
 ---
@@ -84,9 +86,10 @@ Musmi‘ bundles `@tilawa/core` for on-device phoneme decoding and tracking:
 
 ---
 
-## Attribution & License
+## Authors & Attribution
 
-- **Engine:** Built on [Tilawa](https://github.com/yazinsai/tilawa) developed by Yazin Alirhayim and contributors (MIT License).
+- **Musmi‘ Development & UI:** [Manex Technologies](https://github.com/manex-tech) (`manextechnologies@gmail.com`).
+- **Base Recitation Engine:** [Tilawa](https://github.com/yazinsai/tilawa) developed by Yazin Alirhayim and contributors (MIT License).
 - **Quran Text:** Tanzil Project.
 - **Dataset / Training:** Evaluated on tlog (Tarteel, CC-BY) and QUD alignment benchmarks.
 - See [`NOTICE.md`](./NOTICE.md) for full licensing information.
