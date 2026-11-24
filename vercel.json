@@ -1,0 +1,19 @@
+{
+  "buildCommand": "npm --prefix packages/tilawa-core ci && npm --prefix packages/tilawa-core run build && npm --prefix web/frontend ci && npm --prefix web/frontend run build",
+  "outputDirectory": "web/frontend/dist",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        }
+      ]
+    }
+  ]
+}
