@@ -20,40 +20,44 @@ body {
   overflow-x: hidden;
 }
 
-/* Tasteful, elegant background calligraphy watermark on desktop (PC) */
-@media (min-width: 900px) {
+/* Very big, horizontal Islamic calligraphy backdrop spanning behind the main view */
+@media (min-width: 768px) {
   body::before {
     content: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ مُحَمَّدٌ رَسُولُ ٱللَّٰهِ";
     position: fixed;
-    top: 50%;
-    left: 4%;
-    transform: translateY(-50%) rotate(-90deg);
+    top: 22%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-family: Amiri, "IBM Plex Sans Arabic", serif;
-    font-size: 38px;
+    font-size: clamp(60px, 9vw, 130px);
     font-weight: 700;
-    color: rgba(16, 102, 79, 0.05);
-    letter-spacing: 0.15em;
+    line-height: 1;
+    color: var(--color-emerald);
+    opacity: 0.12;
     pointer-events: none;
     user-select: none;
     white-space: nowrap;
     z-index: 0;
+    letter-spacing: 0.05em;
   }
 
   body::after {
     content: "بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
     position: fixed;
-    top: 50%;
-    right: 4%;
-    transform: translateY(-50%) rotate(90deg);
+    bottom: 12%;
+    left: 50%;
+    transform: translate(-50%, 50%);
     font-family: Amiri, "IBM Plex Sans Arabic", serif;
-    font-size: 42px;
+    font-size: clamp(65px, 10vw, 145px);
     font-weight: 700;
-    color: rgba(16, 102, 79, 0.05);
-    letter-spacing: 0.12em;
+    line-height: 1;
+    color: var(--color-emerald);
+    opacity: 0.12;
     pointer-events: none;
     user-select: none;
     white-space: nowrap;
     z-index: 0;
+    letter-spacing: 0.04em;
   }
 }
 
