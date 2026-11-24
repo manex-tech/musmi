@@ -6,6 +6,10 @@ import { ayahsRecited, type CheckerEvent, type EngineEvent, type MemorizationPas
 import type { LoadProgress, Microphone, Tilawa } from "@tilawa/core/web";
 import { EXPLAIN, isShown } from "./lib/explain";
 import { ayahKey, displayIndex, indexQuran, surahList, type QuranText, type QuranVerse } from "./lib/quran-words";
+import { getPageForVerse, getRandomAyahInJuz } from "./lib/mushaf";
+import { MushafViewer } from "./lib/mushaf-view";
+import { MusabaqahEngine } from "./lib/musabaqah";
+import { imamApi } from "./lib/imam-api";
 import { prepareMic } from "./lib/mic";
 import { cleanupOldClient } from "./migrate";
 
@@ -85,7 +89,7 @@ function loadTilawa(): Promise<Tilawa> {
           ? "Loading from this device."
           : p.stage === "warmup"
             ? "Almost there."
-            : "Downloading once. Next time Tilawa starts straight away, even offline.";
+            : "Downloading once. Next time Musmi‘ starts straight away, even offline.";
       },
     });
   });
@@ -132,9 +136,51 @@ interface Take {
 let take: Take | null = null;
 let starting = false;
 
+let isMusabaqahMode = false;
+let musabaqahEngine: MusabaqahEngine | null = null;
+
+async function startMusabaqah() {
+  imamApi.unlockAudio();
+  const reciter = $<HTMLSelectElement>("select-reciter")?.value || "alafasy";
+  const selectedJuz = Number($<HTMLSelectElement>("select-musabaqah-juz")?.value || "30");
+
+  const quran = await loadQuran();
+  const randomPrompt = getRandomAyahInJuz(selectedJuz, quran);
+
+  let surah = randomPrompt.surah;
+  let promptAyah = randomPrompt.ayah;
+  // Recite 5-7 verses from the prompt or up to the end of the surah
+  let toAyah = Math.min(randomPrompt.totalAyahsInSurah, promptAyah + 6);
+  if (toAyah <= promptAyah) {
+    toAyah = Math.min(randomPrompt.totalAyahsInSurah, promptAyah + 1);
+  }
+
+  isMusabaqahMode = true;
+  $("musabaqah-score-pill").hidden = false;
+  $("musabaqah-live-score").textContent = "100";
+  const judgeLight = $("judge-light");
+  if (judgeLight) judgeLight.hidden = true;
+
+  musabaqahEngine = new MusabaqahEngine({
+    onScoreUpdate: (score) => {
+      $("musabaqah-live-score").textContent = String(score);
+    },
+    onStateChange: (st, msg) => {
+      $("hint").textContent = msg;
+      if (judgeLight) {
+        judgeLight.hidden = st !== "correcting";
+      }
+    },
+  });
+
+  await start({ surah, fromAyah: promptAyah + 1, toAyah });
+  void musabaqahEngine.startChallenge(surah, promptAyah, reciter);
+}
+
 async function start(passage?: MemorizationPassage) {
   if (starting || take) return;
   starting = true;
+  imamApi.unlockAudio();
   // Before any await: keeps the tap's user gesture for iOS audio (listen() takes ownership).
   let prepared = prepareMic();
   try {
@@ -184,6 +230,51 @@ async function stop() {
   $<HTMLButtonElement>("btn-stop").disabled = false;
   const mistakes = t.session.mistakes().filter(isShown);
   $("summary").textContent = summary(t.view.quran, ayahsRecited(t.events), mistakes.length);
+
+  // Render review mistakes list
+  const stoppedNotes = $("stopped-notes");
+  stoppedNotes.replaceChildren();
+  if (mistakes.length > 0) {
+    for (const m of mistakes) {
+      const { surah, ayah, word } = m.location;
+      const li = document.createElement("li");
+      li.className = "note";
+      const head = document.createElement("span");
+      head.className = "note-head";
+      head.textContent = `${EXPLAIN[m.errorClass]?.label ?? m.errorClass} · ${surah}:${ayah}`;
+      const text = t.view.quran.get(ayahKey(surah, ayah))?.words[displayIndex(surah, ayah, word)];
+      if (text) {
+        const ar = document.createElement("span");
+        ar.className = "note-word";
+        ar.lang = "ar";
+        ar.dir = "rtl";
+        ar.textContent = text;
+        head.append(" ", ar);
+      }
+      const body = document.createElement("span");
+      body.className = "note-text";
+      body.textContent = EXPLAIN[m.errorClass]?.text ?? "";
+      li.append(head, body);
+      stoppedNotes.append(li);
+    }
+    $("stopped-mistakes-wrap").hidden = false;
+  } else {
+    $("stopped-mistakes-wrap").hidden = true;
+  }
+
+  if (isMusabaqahMode && musabaqahEngine) {
+    const res = musabaqahEngine.finishRound();
+    $("musabaqah-results-card").hidden = false;
+    $("results-grade-badge").textContent = `${res.grade}`;
+    $("results-score-title").textContent = `Final Score: ${res.finalScore}/100`;
+    $("results-detail").textContent = `Mistakes caught: ${res.totalMistakes} · Judge corrections: ${res.interventions}`;
+    isMusabaqahMode = false;
+  } else {
+    $("musabaqah-results-card").hidden = true;
+  }
+  const judgeLight = $("judge-light");
+  if (judgeLight) judgeLight.hidden = true;
+
   t.session.dispose();
   meter(-100);
   show("stopped");
@@ -191,7 +282,7 @@ async function stop() {
 
 function summary(quran: QuranText, recited: { surah: number; ayah: number }[], mistakes: number): string {
   if (!recited.length)
-    return "Tilawa didn't find your place this time. Try a little longer, a little louder, or closer to the microphone.";
+    return "Musmi‘ didn't find your place this time. Try a little longer, a little louder, or closer to the microphone.";
   const runs: string[] = [];
   let i = 0;
   while (i < recited.length) {
@@ -209,7 +300,7 @@ function summary(quran: QuranText, recited: { surah: number; ayah: number }[], m
 const MIC_HELP = {
   denied: [
     "Microphone access is blocked.",
-    "Tilawa needs the microphone to hear you. Allow it from the icon beside the address bar (or in your browser's site settings), then try again. On iPhone: Settings › Safari › Microphone.",
+    "Musmi‘ needs the microphone to hear you. Allow it from the icon beside the address bar (or in your browser's site settings), then try again. On iPhone: Settings › Safari › Microphone.",
   ],
   unavailable: [
     "No microphone found.",
@@ -242,7 +333,9 @@ class RecitationView {
   private spans: HTMLSpanElement[] = [];
   private readonly marks = new Map<string, CheckerEvent>();
   private readonly ayah = $("ayah");
+  private readonly mushafViewer: MushafViewer;
   readonly quran: QuranText;
+  public activeWord: WordRef | null = null;
 
   constructor(quran: QuranText, passage: MemorizationPassage | null) {
     this.quran = quran;
@@ -251,8 +344,21 @@ class RecitationView {
     delete this.ayah.dataset.word;
     $("notes").replaceChildren();
     $("notes-wrap").hidden = true;
-    $("place").textContent = passage ? `${this.surahName(passage.surah)} ${passage.surah}:${passage.fromAyah}–${passage.toAyah}` : "Listening";
-    $("hint").textContent = passage ? "Begin the passage when you're ready." : "Recite a few words. Tilawa will find your place.";
+
+    this.mushafViewer = new MushafViewer({
+      container: $("mushaf-container"),
+      quran: this.quran,
+    });
+
+    if (passage) {
+      const page = getPageForVerse(passage.surah, passage.fromAyah);
+      this.mushafViewer.setPage(page);
+      $("place").textContent = `${this.surahName(passage.surah)} ${passage.surah}:${passage.fromAyah}–${passage.toAyah} · Page ${page}`;
+    } else {
+      $("place").textContent = "Listening";
+    }
+
+    $("hint").textContent = passage ? "Begin the passage when you're ready." : "Recite a few words. Musmi‘ will find your place.";
     $("hint").hidden = false;
   }
 
@@ -267,7 +373,7 @@ class RecitationView {
 
   private position(e: PositionEvent) {
     const top = e.observed[0];
-    if (e.state === "lost") $("hint").textContent = "Lost your place. Keep reciting and Tilawa will find it again.";
+    if (e.state === "lost") $("hint").textContent = "Lost your place. Keep reciting and Musmi‘ will find it again.";
     else if (e.state === "acquiring" && !this.shown) $("hint").textContent = "Finding your place…";
     if (e.state === "ambiguous") {
       $("hint").hidden = false;
@@ -276,13 +382,16 @@ class RecitationView {
     // Only a locked position moves the display: ambiguous candidates would flicker between ayahs.
     if (!top || e.state !== "locked") return;
     $("hint").hidden = true;
+    this.mushafViewer.highlightWord(top.word);
     this.showWord(top.word);
   }
 
   private showWord(w: WordRef) {
+    this.activeWord = w;
     const key = ayahKey(w.surah, w.ayah);
     const ayah = this.quran.get(key);
     if (!ayah) return;
+    const page = getPageForVerse(w.surah, w.ayah);
     if (this.shown !== key) {
       this.shown = key;
       this.spans = ayah.words.map((text, i) => {
@@ -298,7 +407,7 @@ class RecitationView {
       marker.textContent = ` ${toArabicDigits(w.ayah)}`;
       this.ayah.append(marker);
       this.ayah.dataset.ref = key;
-      $("place").textContent = `${ayah.surahNameEn} ${key}`;
+      $("place").textContent = `${ayah.surahNameEn} ${key} · Page ${page}`;
       for (const m of this.marks.values()) this.applyMark(m);
     }
     const at = displayIndex(w.surah, w.ayah, w.word);
@@ -311,10 +420,15 @@ class RecitationView {
 
   private checker(e: CheckerEvent) {
     if (!isShown(e)) return;
+    this.mushafViewer.addCheckerMistake(e);
     if (e.state === "confirmed") {
       this.marks.set(e.id, e);
       this.applyMark(e);
       this.addNote(e);
+      if (isMusabaqahMode && musabaqahEngine) {
+        const reciter = $<HTMLSelectElement>("select-reciter")?.value || "alafasy";
+        void musabaqahEngine.handleMistake(e, reciter);
+      }
     } else if (e.state === "resolved" && this.marks.delete(e.id)) {
       // A self-correction: take the note back.
       document.querySelector(`[data-note="${CSS.escape(e.id)}"]`)?.remove();
@@ -417,11 +531,71 @@ $<HTMLFormElement>("passage-form").addEventListener("submit", (ev) => {
 // Buttons
 
 $("btn-start").addEventListener("click", () => void start());
+$("btn-start-musabaqah")?.addEventListener("click", () => void startMusabaqah());
 $("btn-again").addEventListener("click", () => void start());
 $("btn-retry-load").addEventListener("click", () => void start());
 $("btn-retry-mic").addEventListener("click", () => void start());
 $("btn-stop").addEventListener("click", () => void stop());
 $("btn-cancel").addEventListener("click", () => loadAbort?.abort());
+
+let singleVerseMode = true; // Default: single verse view
+$("btn-toggle-view")?.addEventListener("click", () => {
+  singleVerseMode = !singleVerseMode;
+  $("mushaf-container").hidden = singleVerseMode;
+  $("ayah").hidden = !singleVerseMode;
+  $("btn-toggle-view").textContent = singleVerseMode ? "Full Page View" : "Single Verse View";
+});
+
+// Wire Imam selector in the single-verse bar
+$("single-select-imam")?.addEventListener("change", () => {
+  imamApi.setImam($<HTMLSelectElement>("single-select-imam").value);
+});
+
+// Wire "Listen to Imam" button in the single-verse bar
+$("btn-play-verse-imam")?.addEventListener("click", async () => {
+  imamApi.unlockAudio();
+  const waveEl = $("single-imam-wave");
+  const txt = $("txt-play-verse-imam");
+  if (imamApi.isPlaying()) {
+    imamApi.stop();
+    waveEl.hidden = true;
+    txt.textContent = "Listen to Imam";
+    return;
+  }
+  const w = take?.view?.activeWord;
+  const s = w?.surah ?? 1;
+  const a = w?.ayah ?? 1;
+  txt.textContent = "Stop";
+  waveEl.hidden = false;
+  try {
+    await imamApi.playVerse(s, a);
+  } catch (e) {
+    console.error("Imam play error:", e);
+  }
+  txt.textContent = "Listen to Imam";
+  waveEl.hidden = true;
+});
+
+// Wire "Test Audio" button in the Musabaqah card
+$("btn-test-imam")?.addEventListener("click", async () => {
+  imamApi.unlockAudio();
+  const txt = $("txt-test-imam");
+  if (imamApi.isPlaying()) {
+    imamApi.stop();
+    txt.textContent = "Test Audio";
+    return;
+  }
+  const reciter = $<HTMLSelectElement>("select-reciter")?.value || "alafasy";
+  imamApi.setImam(reciter);
+  txt.textContent = "Stop";
+  try {
+    await imamApi.playVerse(1, 1, reciter);
+  } catch (e) {
+    console.error("Test audio error:", e);
+  }
+  txt.textContent = "Test Audio";
+});
+
 window.addEventListener("pagehide", () => void take?.mic?.stop());
 
 show("idle");

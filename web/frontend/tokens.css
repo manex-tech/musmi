@@ -1,13 +1,27 @@
 :root {
- --color-paper: #FFFFFF; --color-ink: #171717; --color-muted: #626262;
- --color-rule: #DEDEDE; --color-surface: #F6F6F4; --color-selected: #ECEDE8;
- --color-paper-2: var(--color-surface); --color-ink-2: var(--color-muted);
- --color-rule-2: #767676; --color-focus: #171717; --color-error: #a32121;
- --color-success: #28643d; --color-scrim: #0006;
- --font-body: system-ui, sans-serif; --font-display: var(--font-body);
- --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px;
- --space-md: 16px; --space-lg: 24px; --space-xl: 40px;
- --text-sm: 14px; --text-lg: 24px; --control-height: 44px;
- --radius: 8px; --rule: 1px solid var(--color-rule);
+  --color-paper: #F2F2F7;
+  --color-surface: #FFFFFF;
+  --color-ink: #1C1C1E;
+  --color-muted: #8E8E93;
+  --color-rule: rgba(60, 60, 67, 0.12);
+  --color-rule-2: rgba(60, 60, 67, 0.22);
+  --color-selected: #E5E5EA;
+  --color-paper-2: var(--color-surface);
+  --color-ink-2: var(--color-muted);
+  --color-focus: #007AFF;
+  --color-error: #FF3B30;
+  --color-success: #34C759;
+  --color-scrim: rgba(0, 0, 0, 0.35);
+  --color-emerald: #10664F;
+  --color-accent: #007AFF;
+  --color-card-bg: #FFFFFF;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px;
+  --space-md: 16px; --space-lg: 20px; --space-xl: 32px;
+  --text-sm: 13px; --text-lg: 22px; --control-height: 44px;
+  --radius: 12px; --radius-lg: 18px;
+  --rule: 1px solid var(--color-rule);
+  --shadow-ios: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
 }
-html[lang="ar"] { --font-body: "IBM Plex Sans Arabic", sans-serif; }
+html[lang="ar"] { --font-body: "IBM Plex Sans Arabic", -apple-system, sans-serif; }

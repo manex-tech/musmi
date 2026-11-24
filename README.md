@@ -1,144 +1,92 @@
-# Tilawa
+# Musmi‘ (مُسْمِع)
 
-> [!IMPORTANT]
-> **1.0 Preview is out (`1.0.0-rc.1`).** The same 68 MB offline model now does word-by-word tracking *and* catches memorization mistakes as you recite: wrong, missed and extra words, and skipped passages. On held-out learner audio it scores 90.3% precision and catches 87.5% of mistakes.
->
-> It flags memorization mistakes only for now (no tajweed or pronunciation grading yet, and fast hadr or kids' voices aren't supported).
->
-> **Help us get to 1.0:** recite 2–5 minutes the way you normally do at [tilawa.dev/help](https://tilawa.dev/help/), or try it live at [tilawa.dev](https://tilawa.dev).
+> An intelligent, offline-capable Quran Reviewer, Hifz Companion, and Musabaqah (Competition) Simulator.
+> Built on top of the open-source [Tilawa](https://github.com/yazinsai/tilawa) recitation engine created by [Yazin Alirhayim](https://github.com/yazinsai) and contributors.
 
-Offline, streaming Quran recitation engine. It follows a reciter word by word and flags memorization mistakes (wrong, omitted and added words, and skipped passages) as they happen, entirely on-device: in the browser, Node, and (soon) React Native. Audio never leaves the device.
+---
 
-`@tilawa/core` is TypeScript with no runtime dependencies. You install the ONNX Runtime for your platform as a peer dependency.
+## Overview
 
-> **Upgrading from 0.x?** 1.0 is a new engine with a new API. See the [migration guide](https://github.com/yazinsai/tilawa/blob/main/docs/migration-0.x-to-1.0.md).
+**Musmi‘** (مُسْمِع - *The Listener & Examiner*) transforms on-device acoustic Quran recognition into an interactive review and competition experience. Designed with a clean, minimal iOS-inspired interface, it works seamlessly across phones, tablets, and desktop browsers.
 
-## Install
+### Key Features
+
+1. **Hifz Auto-Detector & Mushaf Synchronizer**
+   - Recite from anywhere in the Quran without selecting a surah or ayah beforehand.
+   - Automatically identifies the verse within 2–3 spoken words.
+   - Synchronizes word-by-word with the 604-page Madani Mushaf layout with automatic page-turning.
+   - Switch effortlessly between Single Verse (1 Ayah) mode and Full Page Mushaf view.
+
+2. **Musabaqah Competition Mode (المسابقة)**
+   - Select any Juz (1 through 30).
+   - The chosen Imam prompts a random ayah from that Juz.
+   - When the bell sounds, continue reciting.
+   - If a memorization slip occurs:
+     - A chime sounds.
+     - A subtle red signal illuminates.
+     - The Imam recites the correct verse before you resume.
+   - Final competition scoring and ranking (*Mumtaz*, *Jayyid Jiddan*, *Jayyid*, *Maqbool*) with detailed slip reports.
+
+3. **Master Imam Audio Integration**
+   - High-quality streaming reference audio from 8 renowned Qaris:
+     - Mishary Rashid Alafasy
+     - Mahmoud Khalil Al-Husary (Murattal)
+     - Al-Husary (Teacher / Muallim with pauses)
+     - Mohamed Siddiq Al-Minshawi
+     - Abdul Basit Abdul Samad
+     - Saad Al-Ghamdi
+     - Sa'ud Ash-Shuraym
+     - Maher Al-Muaiqly
+   - One-tap audio testing and instant verse playback.
+
+4. **100% Private & On-Device**
+   - All voice processing and neural acoustic model inference run locally in the browser via WebGPU / WebAssembly (ONNX Runtime).
+   - Audio never leaves your device.
+
+---
+
+## Running the Web App
+
+### Prerequisites
+- Node.js ≥ 20.12
+- npm
+
+### Development Server
 
 ```bash
-npm i @tilawa/core@next onnxruntime-web    # browser
-npm i @tilawa/core@next onnxruntime-node   # Node
+# Install root/core dependencies if not already done
+npm --prefix packages/tilawa-core ci
+npm --prefix packages/tilawa-core run build
+
+# Start frontend
+npm --prefix web/frontend ci
+npm --prefix web/frontend run dev
 ```
 
-`onnxruntime-web` ≥ 1.19, `onnxruntime-node` ≥ 1.20. Node ≥ 20.12.
+Open `http://localhost:5173/` in your browser.
 
-In the browser, onnxruntime-web's `.wasm` files load from `https://tilawa.dev/v1/runtime/ort/<your onnxruntime-web version>/` by default. The versions hosted there are listed in [`/v1/manifest.json`](https://tilawa.dev/v1/manifest.json) (1.30.0 at the time of writing). For any other version, pass `wasmPaths` or [self-host](https://github.com/yazinsai/tilawa/blob/main/docs/self-hosting.md).
+### Production Build
 
-## Browser
-
-```ts
-import { createTilawa } from "@tilawa/core/web";
-
-// Downloads the model and the Quran reference once, then serves them from the Cache API.
-const tilawa = await createTilawa({ onProgress: (p) => (bar.value = p.fraction) });
-
-const session = tilawa.startFreeRecitation();
-session.subscribe((e) => {
-  if (e.type === "position" && e.observed[0]) highlight(e.observed[0].word); // { surah, ayah, word }
-  if (e.type === "checker" && e.state === "confirmed") mark(e.location, e.errorClass);
-});
-
-const mic = await tilawa.listen(session); // microphone → session
-// …
-await mic.stop();                         // stops the tracks, then ends the session
-console.log(session.mistakes());
-tilawa.dispose();                         // releases the ONNX session
+```bash
+npm --prefix web/frontend run build
 ```
 
-`listen()` needs a secure context (https or localhost). If it can't open the microphone it rejects with a `MicrophoneError` whose `reason` is `"denied"`, `"unavailable"` or `"insecure-context"`.
+---
 
-### A declared passage
+## Technical Architecture
 
-When the app knows what the reciter is about to read, for example a page on screen, start a memorization session for it:
+Musmi‘ bundles `@tilawa/core` for on-device phoneme decoding and tracking:
 
-```ts
-const session = tilawa.startMemorization(
-  { surah: 18, fromAyah: 60, toAyah: 70 },
-  { confirm: { after: "next-word" } }, // confirm a mistake once the next word starts (default: 2.5 s after it)
-);
-```
+- **Frontend:** Vite, TypeScript, minimal iOS-style design tokens, Amiri Quranic typography.
+- **Engine:** `@tilawa/core` (research engine by Yazin Alirhayim).
+- **Runtime:** ONNX Runtime Web (`onnxruntime-web`) running quantized acoustic models (`spliced-clean@1-int8`).
+- **Audio CDN:** EveryAyah high-bitrate streaming audio.
 
-The tracker then stays inside the passage, and `position` events carry the word the reciter should be on (`expected`).
+---
 
-## Node
+## Attribution & License
 
-```ts
-import { createTilawa, readWav } from "@tilawa/core/node";
-
-const tilawa = await createTilawa(); // model cached in ~/.cache/tilawa; the reference ships in the package
-const session = tilawa.startMemorization({ surah: 1, fromAyah: 1, toAyah: 7 });
-session.subscribe((e) => {
-  if (e.type === "checker" && e.state === "confirmed") console.log(e.errorClass, e.location);
-});
-
-const { samples, sampleRate } = await readWav("take.wav");
-for (let i = 0; i < samples.length; i += 4800) session.pushAudio(samples.subarray(i, i + 4800), sampleRate);
-await session.end();
-console.log(session.mistakes());
-await tilawa.dispose();
-```
-
-`pushAudio` takes audio at any sample rate. Calls run one at a time in call order, so a capture callback doesn't need to await them. Use `modelDir` to load a model directory you already have, or `cacheDir` to put downloads somewhere else.
-
-## Events
-
-The event schema is versioned (`v: 1`). Every session sends three kinds of event:
-
-- **`capabilities`** comes first. It lists which error classes the model supports and which it doesn't, and carries `modelVersion` (the model id), `modelRelease`, `referenceVersion`, `sdkVersion`, `modelSha256`, `tier` and `backend`. V1 supports the four memorization classes `wrong_word`, `omitted_word`, `added_word` and `skipped_passage`.
-- **`position`**: where the reciter is. `observed` lists candidates, best first, each with a `word` (`{surah, ayah, word}`, 1-based word index), a `span` and a `confidence`. `state` is `acquiring`, `locked`, `ambiguous` or `lost`. In memorization sessions `expected` is the passage word the reciter should be on.
-- **`checker`**: a possible mistake, with an `id` that stays the same across its states. Each one goes `suspected` → `confirmed`, or `resolved` (a self-correction), or `uncertain` (the audio was too unclear to judge). It carries `errorClass`, `location`, and the `expected`/`observed` phonemes.
-
-`timeMs` on `position` and `checker` events is the session audio clock: ms of 16 kHz audio delivered since the first sample. `session.now()` reads the same clock. `ayahsRecited(events)` gives the ayahs recited, in order.
-
-## Sessions
-
-- A session is one take. `end()` drains the audio and decides every open mistake. It is idempotent, and after it starts `pushAudio` rejects with `SessionEndedError`. To start again, start a new session.
-- `dispose()` drops a session's subscribers and buffers. `tilawa.dispose()` disposes every session and releases the model.
-- `session.id` is a uuid. `session.startedAt` is the wall-clock time of the first sample, and `session.policy` is the policy with its defaults filled in.
-- Policy: `confirm` (`{ after: "delay", ms }` or `{ after: "next-word" }`), `minConfidence` (default 0.6), and `countSelfCorrections` (default false: resolved mistakes aren't in `mistakes()`).
-
-## Models and hosting
-
-| Tier | Model | Size | Picked when |
-|---|---|---|---|
-| `full` | `spliced-clean@1-int8` | 68 MB | default |
-| `lite` | `spliced-clean-lite@1-int8` | 25 MB | `tier: "auto"` on a device reporting under 4 GB of memory, on iPhone and iPad, or on other mobiles without WebGPU |
-
-By default the browser entry loads from `https://tilawa.dev/v1/`: models from `models/<id>/<version>/model.onnx`, the reference from `reference/ref-v2.json`, and the onnxruntime-web WASM files from `runtime/ort/<version>/`. These files are immutable; a new model or reference gets a new path. Downloads are checked against the sha256 in the bundled registry.
-
-- **Self-hosting**: mirror that layout and pass `assetBase`.
-- **Offline**: pass `reference` (import `@tilawa/core/assets/ref-v2.json`) and a `model` you loaded with `loadWebModel` / `loadNodeModel`. If you serve the WASM files yourself, pass `wasmPaths` to `loadWebModel` (with your own `model`, `createTilawa` doesn't use it).
-
-Load failures reject `createTilawa` with `TilawaLoadError` (`stage`: `model` or `reference`), `ModelIntegrityError` or `ModelBudgetError`. Pass `signal` to cancel a download.
-
-## Packages
-
-| Import | What |
-|---|---|
-| `@tilawa/core` | Runtime-neutral engine: `createEngine`, event types, `loadReferenceIndex`, the model registry, `ayahsRecited`, errors |
-| `@tilawa/core/web` | `createTilawa`, `prepareMicrophone`, `loadWebModel`, `startMicrophone`, `cacheStorage`, `decodeWav` |
-| `@tilawa/core/node` | `createTilawa`, `loadNodeModel`, `loadNodeTier`, `fsStorage`, `readWav` |
-| `@tilawa/core/react-native` | `createTilawa`, `loadNativeModel`. Experimental: not yet validated on devices |
-| `@tilawa/core/report` | Opt-in problem reports (no audio is kept or sent unless the app asks) |
-| `@tilawa/core/assets/*.json` | `ref-v2.json`, `phrases-v1.json` |
-
-## Documentation
-
-- [Quickstart](https://github.com/yazinsai/tilawa/blob/main/docs/quickstart.md): web, Node, declared passages, cleanup, errors, iOS
-- [API reference](https://github.com/yazinsai/tilawa/blob/main/docs/api.md): every export, events, lifecycle, version policy
-- [Support matrix](https://github.com/yazinsai/tilawa/blob/main/docs/support.md): browsers, Node, React Native, model sizes
-- [Self-hosting and offline use](https://github.com/yazinsai/tilawa/blob/main/docs/self-hosting.md)
-- [Reporting](https://github.com/yazinsai/tilawa/blob/main/docs/reporting.md): opt-in problem reports
-- [Migrating from 0.x](https://github.com/yazinsai/tilawa/blob/main/docs/migration-0.x-to-1.0.md)
-- [Model card](https://github.com/yazinsai/tilawa/blob/main/docs/model-card.md)
-- Contributors: [recite at tilawa.dev/help](https://github.com/yazinsai/tilawa/blob/main/docs/contributing-recordings.md), [privacy](https://github.com/yazinsai/tilawa/blob/main/docs/privacy.md)
-
-## Licence and credits
-
-The code is MIT. The listener model is trained and evaluated on tlog (Tarteel, CC-BY) and Quranic Universal Ayahs / the QUD alignment benchmark (QUD Technologies, CC-BY). It is distilled from `obadx/muaalem-model-v3_2` (MIT) and uses the `quran-transcript` phoneme inventory (MIT). The architecture and export follow k2-fsa icefall (Apache-2.0). The Quran text derives from Tanzil. Full notices: [NOTICE.md](https://github.com/yazinsai/tilawa/blob/main/NOTICE.md).
-
-## This repository
-
-- `packages/tilawa-core/`: the SDK. `src/engine/` and `src/runtime/` are copied from the research engine at a pinned commit by `scripts/sync-engine.mjs`. Don't edit them by hand.
-- `packages/core/`, `packages/sdk/`: the research engine and runtime, with the lab (`tools/lab.py`, `modal/`) that measures every change. [Lab history](https://github.com/yazinsai/tilawa/blob/main/docs/benchmarks/lab-history.md) shows every experiment and the improvements over time.
-- `web/`: the demo at tilawa.dev.
+- **Engine:** Built on [Tilawa](https://github.com/yazinsai/tilawa) developed by Yazin Alirhayim and contributors (MIT License).
+- **Quran Text:** Tanzil Project.
+- **Dataset / Training:** Evaluated on tlog (Tarteel, CC-BY) and QUD alignment benchmarks.
+- See [`NOTICE.md`](./NOTICE.md) for full licensing information.

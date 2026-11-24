@@ -3,53 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tilawa — Recite the Quran. See the verse.</title>
-    <meta name="title" content="Tilawa — Recite the Quran. See the verse." />
-    <meta name="description" content="Recite from anywhere in the Quran and Tilawa follows you word by word, noting missed, extra and different words. It runs on your device; your audio is never uploaded." />
+    <title>Musmi‘ (مُسْمِع) — Quran Reviewer & Musabaqah Platform</title>
+    <meta name="title" content="Musmi‘ (مُسْمِع) — Quran Reviewer & Musabaqah Platform" />
+    <meta name="description" content="Musmi‘ is an intelligent Quran reviewer, Hifz companion, and Musabaqah platform with auto-detecting Mushaf, real-time error detection, and Imam audio correction. Powered by Tilawa." />
     <meta name="robots" content="index, follow" />
-    <meta name="application-name" content="Tilawa" />
+    <meta name="application-name" content="Musmi" />
     <meta name="theme-color" content="#FFFFFF" />
     <link rel="canonical" href="https://tilawa.dev" />
     <link rel="icon" href="/icon-192.png" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Tilawa" />
-    <meta property="og:title" content="Tilawa — Recite the Quran. See the verse." />
-    <meta property="og:description" content="Recite from anywhere in the Quran and Tilawa follows you word by word, on your device." />
+    <meta property="og:site_name" content="Musmi" />
+    <meta property="og:title" content="Musmi‘ (مُسْمِع) — Quran Reviewer & Musabaqah Platform" />
+    <meta property="og:description" content="Recite anywhere in the Quran. Musmi‘ detects your place, tracks your Mushaf page, and reviews mistakes in real time. Powered by Tilawa." />
     <meta property="og:url" content="https://tilawa.dev" />
     <meta property="og:image" content="https://tilawa.dev/meta-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="800" />
     <meta property="og:image:height" content="420" />
-    <meta property="og:image:alt" content="Tilawa following a Quran recitation word by word." />
+    <meta property="og:image:alt" content="Musmi following a Quran recitation word by word." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Tilawa — Recite the Quran. See the verse." />
-    <meta name="twitter:description" content="Recite from anywhere in the Quran and Tilawa follows you word by word, on your device." />
+    <meta name="twitter:title" content="Musmi‘ (مُسْمِع) — Quran Reviewer & Musabaqah Platform" />
+    <meta name="twitter:description" content="Recite anywhere in the Quran. Musmi‘ detects your place, tracks your Mushaf page, and reviews mistakes in real time. Powered by Tilawa." />
     <meta name="twitter:image" content="https://tilawa.dev/meta-image.png" />
   </head>
   <body data-view="idle">
     <div id="app">
       <header class="nav-edge">
-        <a class="wordmark" href="/" aria-label="Tilawa"><span>tilawa</span><span lang="ar">تلاوة</span></a>
+        <a class="wordmark" href="/" aria-label="Musmi"><span>musmi‘</span><span lang="ar">مُسْمِع</span></a>
         <nav aria-label="Main navigation">
-          <a href="#developers">Developers</a>
-          <a href="https://github.com/yazinsai/tilawa" target="_blank" rel="noopener">GitHub ↗</a>
+          <span class="ios-status-badge" id="status" role="status">On-device</span>
+          <a class="nav-link" href="https://github.com/yazinsai/tilawa" target="_blank" rel="noopener">Powered by Tilawa ↗</a>
         </nav>
       </header>
-      <main>
-        <div class="page-split">
-          <section class="intro" aria-labelledby="intro-title">
-            <p class="eyebrow">PREVIEW · RECITE. BE FOLLOWED. STAY OFFLINE.</p>
-            <h1 id="intro-title">Recite the Quran.<br />See the verse.</h1>
-            <p class="lede-copy">Start anywhere. Tilawa finds your place, follows you word by word, and gently notes words that were missed, added or different.</p>
-            <p class="facts"><span>Runs on your device</span><span aria-hidden="true">/</span><span>No audio uploads</span></p>
-            <p class="preview-note">Preview: it can miss mistakes and sometimes warns when you recited correctly. Pronunciation and tajweed are not checked yet.</p>
-          </section>
-
-          <section class="bench" aria-labelledby="demo-title">
-            <header class="bench-heading">
-              <h2 id="demo-title">Try Tilawa</h2>
-              <span id="status" role="status">On-device</span>
-            </header>
+      <main class="app-main">
+        <section class="bench" aria-labelledby="demo-title">
+          <header class="bench-heading sr-only">
+            <h2 id="demo-title">Musmi Reciter</h2>
+          </header>
 
             <div id="view-idle" class="view">
               <div class="demo-intro">
@@ -61,15 +51,84 @@
               </div>
               <button id="btn-start" class="primary-btn" type="button">
                 <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3" /><path d="M5 10v2a7 7 0 0014 0v-2M12 19v3M8 22h8" /></svg>
-                <span>Start reciting</span>
+                <span>Free Recitation & Hifz Viewer</span>
               </button>
+
+              <div class="musabaqah-card">
+                <div class="musabaqah-card-header">
+                  <span class="musabaqah-badge">Musabaqah Mode (المسابقة)</span>
+                  <span id="musabaqah-score-pill" class="score-pill" hidden>Score: <strong id="musabaqah-live-score">100</strong></span>
+                </div>
+                <p class="demo-copy">Select a Juz. The Imam recites a random verse from it. When the chime sounds, continue reciting. If you make a mistake, a chime sounds, a red light signals, and the Imam recites the correct verse before you resume.</p>
+                <div class="musabaqah-controls">
+                  <div class="musabaqah-row">
+                    <label class="musabaqah-label" style="flex: 1;">
+                      <span>Juz Selection</span>
+                      <select id="select-musabaqah-juz" class="control-select">
+                        <option value="1">Juz 1 (الجزء الأول)</option>
+                        <option value="2">Juz 2 (الجزء الثاني)</option>
+                        <option value="3">Juz 3 (الجزء الثالث)</option>
+                        <option value="4">Juz 4 (الجزء الرابع)</option>
+                        <option value="5">Juz 5 (الجزء الخامس)</option>
+                        <option value="6">Juz 6 (الجزء السادس)</option>
+                        <option value="7">Juz 7 (الجزء السابع)</option>
+                        <option value="8">Juz 8 (الجزء الثامن)</option>
+                        <option value="9">Juz 9 (الجزء التاسع)</option>
+                        <option value="10">Juz 10 (الجزء العاشر)</option>
+                        <option value="11">Juz 11</option>
+                        <option value="12">Juz 12</option>
+                        <option value="13">Juz 13</option>
+                        <option value="14">Juz 14</option>
+                        <option value="15">Juz 15</option>
+                        <option value="16">Juz 16</option>
+                        <option value="17">Juz 17</option>
+                        <option value="18">Juz 18</option>
+                        <option value="19">Juz 19</option>
+                        <option value="20">Juz 20</option>
+                        <option value="21">Juz 21</option>
+                        <option value="22">Juz 22</option>
+                        <option value="23">Juz 23</option>
+                        <option value="24">Juz 24</option>
+                        <option value="25">Juz 25</option>
+                        <option value="26">Juz 26</option>
+                        <option value="27">Juz 27</option>
+                        <option value="28">Juz 28 (قد سمع)</option>
+                        <option value="29">Juz 29 (تبارك)</option>
+                        <option value="30" selected>Juz 30 (عمّ)</option>
+                      </select>
+                    </label>
+                  </div>
+                  <label class="musabaqah-label">
+                    <span>Select Qari / Imam</span>
+                    <div class="imam-select-row">
+                      <select id="select-reciter" class="control-select">
+                        <option value="alafasy">Mishary Alafasy (مشاري العفاسي)</option>
+                        <option value="husary">Mahmoud Al-Husary (محمود خليل الحصري)</option>
+                        <option value="husary_muallim">Al-Husary Teacher (الحصري - المعلم)</option>
+                        <option value="minshawy">Mohamed Al-Minshawi (محمد صديق المنشاوي)</option>
+                        <option value="abdulbasit">Abdul Basit (عبد الباسط)</option>
+                        <option value="ghamadi">Saad Al-Ghamdi (سعد الغامدي)</option>
+                        <option value="shuraym">Sa'ud Ash-Shuraym (سعود الشريم)</option>
+                        <option value="muaiqly">Maher Al-Muaiqly (ماهر المعيقلي)</option>
+                      </select>
+                      <button id="btn-test-imam" class="secondary-btn test-audio-btn" type="button">
+                        <span id="txt-test-imam">Test Audio</span>
+                      </button>
+                    </div>
+                  </label>
+                  <button id="btn-start-musabaqah" class="primary-btn musabaqah-start-btn" type="button">
+                    <span>Start Musabaqah Challenge</span>
+                  </button>
+                </div>
+              </div>
+
               <p class="demo-note">The first start downloads up to 70 MB, once.<br />Your audio stays on this device.</p>
             </div>
 
             <div id="view-loading" class="view" hidden>
               <div class="state-content">
                 <h3>Getting ready…</h3>
-                <p id="loading-detail" class="demo-copy">Downloading once. Next time Tilawa starts straight away, even offline.</p>
+                <p id="loading-detail" class="demo-copy">Downloading once. Next time Musmi‘ starts straight away, even offline.</p>
               </div>
               <div class="progress-track" id="progress-track" role="progressbar" aria-label="Getting ready" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress"></div></div>
               <p id="progress-label" class="demo-note">0%</p>
@@ -78,7 +137,7 @@
 
             <div id="view-load-error" class="view" role="alert" hidden>
               <div class="state-content">
-                <h3>Tilawa couldn't get ready.</h3>
+                <h3>Musmi‘ couldn't get ready.</h3>
                 <p class="demo-copy">Check your connection and try again. Anything already downloaded is kept.</p>
                 <p id="load-error-detail" class="error-detail"></p>
               </div>
@@ -103,11 +162,48 @@
 
             <div id="recitation" class="recitation" hidden>
               <div class="place-row">
-                <p id="place" class="place">Listening</p>
+                <div class="place-meta">
+                  <span id="judge-light" class="judge-light" title="Judge mistake signal" hidden></span>
+                  <p id="place" class="place">Listening</p>
+                </div>
+                <div class="view-mode-toggle">
+                  <button id="btn-toggle-view" class="mode-pill-btn" type="button">Full Page View</button>
+                </div>
                 <span id="level" class="level" aria-hidden="true"><span></span></span>
               </div>
+
+              <!-- Dedicated Imam bar for Single Verse View -->
+              <div id="single-ayah-imam-bar" class="single-ayah-imam-bar">
+                <div class="imam-select-group">
+                  <span class="imam-badge">Imam</span>
+                  <select id="single-select-imam" class="control-select imam-picker">
+                    <option value="alafasy">Mishary Alafasy (العفاسي)</option>
+                    <option value="husary">Al-Husary (الحصري)</option>
+                    <option value="husary_muallim">Al-Husary Teacher (المعلم)</option>
+                    <option value="minshawy">Al-Minshawi (المنشاوي)</option>
+                    <option value="abdulbasit">Abdul Basit (عبد الباسط)</option>
+                    <option value="ghamadi">Saad Al-Ghamdi (الغامدي)</option>
+                    <option value="shuraym">Sa'ud Ash-Shuraym (الشريم)</option>
+                    <option value="muaiqly">Maher Al-Muaiqly (المعيقلي)</option>
+                  </select>
+                </div>
+                <div class="imam-player-group">
+                  <button id="btn-play-verse-imam" class="imam-play-pill-btn" type="button">
+                    <span id="txt-play-verse-imam">Listen to Imam</span>
+                  </button>
+                  <span id="single-imam-wave" class="mushaf-wave" hidden>
+                    <span></span><span></span><span></span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 1 Ayah View (defaulted visible) -->
               <p id="ayah" class="ayah" dir="rtl" lang="ar" aria-live="off"></p>
-              <p id="hint" class="hint">Recite a few words. Tilawa will find your place.</p>
+
+              <!-- Full Page Mushaf (defaulted hidden) -->
+              <div id="mushaf-container" class="mushaf-container" hidden></div>
+
+              <p id="hint" class="hint">Recite a few words. Musmi‘ will find your place.</p>
               <div id="notes-wrap" class="notes-wrap" hidden>
                 <h3 class="notes-title">Worth a second look</h3>
                 <ol id="notes" class="notes" aria-live="polite"></ol>
@@ -120,14 +216,23 @@
             </div>
 
             <div id="view-stopped" class="view" hidden>
+              <div id="musabaqah-results-card" class="musabaqah-results-card" hidden>
+                <div class="results-badge" id="results-grade-badge">Mumtaz (ممتاز)</div>
+                <h3 id="results-score-title">Final Score: 100/100</h3>
+                <p id="results-detail" class="muted"></p>
+              </div>
               <p id="summary" class="summary"></p>
+              <div id="stopped-mistakes-wrap" class="notes-wrap" hidden>
+                <h3 class="notes-title">Mistakes Review</h3>
+                <ol id="stopped-notes" class="notes"></ol>
+              </div>
               <button id="btn-again" class="primary-btn" type="button">Recite again</button>
             </div>
 
             <details id="passage" class="disclosure">
               <summary>Practise a passage</summary>
               <form id="passage-form" class="passage-form">
-                <p class="muted">Pick what you're about to recite. Tilawa stays inside it and points out anything missed, added or different.</p>
+                <p class="muted">Pick what you're about to recite. Musmi‘ stays inside it and points out anything missed, added or different.</p>
                 <label>Surah <select id="passage-surah" required><option value="">Loading…</option></select></label>
                 <div class="passage-range">
                   <label>From ayah <input id="passage-from" type="number" min="1" value="1" required inputmode="numeric" /></label>
@@ -137,47 +242,20 @@
               </form>
             </details>
 
-            <p class="scope-note">Tilawa notes wrong, missed and extra words, and skipped passages. It doesn't check pronunciation or tajweed yet.</p>
+            <p class="scope-note">Musmi‘ notes wrong, missed and extra words, and skipped passages. It doesn't check pronunciation or tajweed yet.</p>
 
             <details id="tech" class="disclosure tech">
-              <summary>Details</summary>
+              <summary>System & Device Details</summary>
               <dl id="tech-list">
-                <dt>Runs on</dt><dd id="tech-backend">Not loaded yet. Tilawa uses WebGPU where it can and falls back to WebAssembly (WASM).</dd>
+                <dt>Runs on</dt><dd id="tech-backend">Not loaded yet. Uses WebGPU where available and falls back to WebAssembly (WASM).</dd>
               </dl>
             </details>
           </section>
-        </div>
-
-        <section id="developers" class="developers" aria-labelledby="developers-title">
-          <div class="developer-copy">
-            <p class="eyebrow muted">FOR DEVELOPERS</p>
-            <h2 id="developers-title">The same engine. In your app.</h2>
-            <p class="muted">This page is <code>@tilawa/core</code> with no options. TypeScript for the browser and Node, MIT licensed, with no network calls of its own beyond fetching its model.</p>
-            <div class="developer-links">
-              <a href="https://github.com/yazinsai/tilawa#readme" target="_blank" rel="noopener"><span>Docs</span><span aria-hidden="true">↗</span></a>
-              <a href="https://www.npmjs.com/package/@tilawa/core" target="_blank" rel="noopener"><span>npm</span><span aria-hidden="true">↗</span></a>
-              <a href="https://github.com/yazinsai/tilawa" target="_blank" rel="noopener"><span>GitHub</span><span aria-hidden="true">↗</span></a>
-            </div>
-          </div>
-          <div class="quickstart">
-            <pre><code><span class="c">// npm i @tilawa/core@next onnxruntime-web</span>
-import { createTilawa } from "@tilawa/core/web";
-const tilawa = await createTilawa();
-const session = tilawa.startFreeRecitation();
-session.subscribe((e) =&gt; {
-  if (e.type === "position") show(e.observed[0]?.word);
-  if (e.type === "checker" &amp;&amp; e.state === "confirmed")
-    mark(e.location, e.errorClass);
-});
-const mic = await tilawa.listen(session);
-<span class="c">// later: await mic.stop(); session.mistakes()</span></code></pre>
-          </div>
-        </section>
       </main>
       <footer class="colophon">
-        <span>Tilawa · تلاوة</span>
-        <span class="footer-note">Runs on your device. Your audio is never uploaded.</span>
-        <a href="https://github.com/yazinsai/tilawa" target="_blank" rel="noopener">Source ↗</a>
+        <span>Musmi‘ (مُسْمِع)</span>
+        <span class="footer-note">Built on the open-source <a href="https://github.com/yazinsai/tilawa" target="_blank" rel="noopener">Tilawa</a> engine by Yazin Alirhayim and contributors.</span>
+        <a href="https://github.com/yazinsai/tilawa" target="_blank" rel="noopener">Tilawa Source ↗</a>
       </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>
