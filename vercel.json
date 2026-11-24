@@ -1,5 +1,6 @@
 {
-  "buildCommand": "npm --prefix packages/tilawa-core ci && npm --prefix packages/tilawa-core run build && npm --prefix web/frontend ci && npm --prefix web/frontend run build",
+  "installCommand": "npm --prefix packages/tilawa-core install && npm --prefix packages/tilawa-core run build && npm --prefix web/frontend install",
+  "buildCommand": "npm --prefix web/frontend run build",
   "outputDirectory": "web/frontend/dist",
   "headers": [
     {
