@@ -16,6 +16,45 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Tasteful, elegant background calligraphy watermark on desktop (PC) */
+@media (min-width: 900px) {
+  body::before {
+    content: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ مُحَمَّدٌ رَسُولُ ٱللَّٰهِ";
+    position: fixed;
+    top: 50%;
+    left: 4%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-family: Amiri, "IBM Plex Sans Arabic", serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: rgba(16, 102, 79, 0.05);
+    letter-spacing: 0.15em;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    z-index: 0;
+  }
+
+  body::after {
+    content: "بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+    position: fixed;
+    top: 50%;
+    right: 4%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: Amiri, "IBM Plex Sans Arabic", serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: rgba(16, 102, 79, 0.05);
+    letter-spacing: 0.12em;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    z-index: 0;
+  }
 }
 
 button, select, input, textarea {
@@ -62,6 +101,8 @@ a:hover {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
 /* iOS Navigation Bar */
