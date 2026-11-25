@@ -4,6 +4,32 @@
   "outputDirectory": "web/frontend/dist",
   "headers": [
     {
+      "source": "/v1/runtime/ort/(.*\\\\.mjs)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/javascript; charset=utf-8"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/v1/runtime/ort/(.*\\\\.wasm)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/wasm"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {
