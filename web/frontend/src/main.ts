@@ -533,7 +533,16 @@ $<HTMLFormElement>("passage-form").addEventListener("submit", (ev) => {
 $("btn-start").addEventListener("click", () => void start());
 $("btn-start-musabaqah")?.addEventListener("click", () => void startMusabaqah());
 $("btn-again").addEventListener("click", () => void start());
-$("btn-retry-load").addEventListener("click", () => void start());
+$("btn-retry-load").addEventListener("click", () => {
+  // ONNX Runtime memoizes a rejected WASM initialization promise. A fresh page
+  // context is required after a dynamic runtime-module or initWasm failure.
+  const detail = $("load-error-detail").textContent ?? "";
+  if (/dynamically imported module|initWasm|no available backend found/i.test(detail)) {
+    location.reload();
+    return;
+  }
+  void start();
+});
 $("btn-retry-mic").addEventListener("click", () => void start());
 $("btn-stop").addEventListener("click", () => void stop());
 $("btn-cancel").addEventListener("click", () => loadAbort?.abort());
