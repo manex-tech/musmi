@@ -1,6 +1,6 @@
 {
   "installCommand": "npm --prefix packages/tilawa-core install && npm --prefix packages/tilawa-core run build && npm --prefix web/frontend install",
-  "buildCommand": "npm --prefix web/frontend run build && npm --prefix web/frontend run assets:v1 -- --models-url \"${TILAWA_MODELS_URL:?Set TILAWA_MODELS_URL in Vercel Project Environment Variables}\"",
+  "buildCommand": "npm --prefix web/frontend run build && npm --prefix web/frontend run assets:v1 -- --models-url \"https://github.com/yazinsai/tilawa/releases/download/models-v1/{id}-{version}.onnx\"",
   "outputDirectory": "web/frontend/dist",
   "headers": [
     {
