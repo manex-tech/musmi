@@ -1010,3 +1010,149 @@ h3 {
     padding: 14px 10px;
   }
 }
+
+
+/* Musmi launch identity: quiet, editorial, emerald and warm ivory */
+:root {
+  --musmi-emerald: #0B382E;
+  --musmi-emerald-soft: #174D40;
+  --musmi-ivory: #F6F4EC;
+  --musmi-paper: #FFFEFA;
+  --musmi-ink: #18231F;
+  --musmi-muted: #78827B;
+  --musmi-line: #E7E5DA;
+  --musmi-gold: #C7AD76;
+}
+html, body { background: var(--musmi-ivory); color: var(--musmi-ink); }
+body::before, body::after { content: none !important; }
+#app { max-width: 920px; padding: 22px 28px 44px; }
+.nav-edge {
+  min-height: 76px; height: auto; margin: 0 0 28px; padding: 0 2px 18px;
+  border-bottom: 1px solid var(--musmi-line);
+}
+.wordmark { gap: 11px; }
+.wordmark > :first-child {
+  color: var(--musmi-emerald); font: 750 27px/1 var(--font-display);
+  letter-spacing: -.055em;
+}
+.wordmark [lang="ar"] {
+  color: var(--musmi-emerald); font: 500 23px/1.2 Amiri, "IBM Plex Sans Arabic", serif;
+  padding-left: 11px; border-left: 1px solid var(--musmi-line);
+}
+nav { gap: 18px; }
+.nav-link { font-size: 12px; color: #68766E; }
+.ios-status-badge {
+  color: var(--musmi-emerald); background: #E8EEE8; border: 1px solid #DCE6DE;
+  border-radius: 999px; padding: 6px 11px; font-size: 10px; letter-spacing: .04em;
+}
+.app-main { width: 100%; }
+.bench {
+  position: relative; overflow: hidden; gap: 24px; padding: clamp(24px, 5vw, 52px);
+  background: var(--musmi-paper); border: 1px solid #EAE8DE; border-radius: 22px;
+  box-shadow: 0 18px 55px rgba(28, 49, 40, .055);
+}
+.bench::before {
+  content: "مُسْمِع"; position: absolute; top: 20px; right: 28px;
+  color: var(--musmi-emerald); opacity: .09; font: 500 24px/1 Amiri, serif;
+  pointer-events: none;
+}
+.demo-intro { gap: 18px; padding: 22px 12px 20px; }
+.example-label {
+  color: #8B8069; font-size: 10px; letter-spacing: .16em;
+}
+.example-verse { gap: 10px; font: 400 clamp(35px, 5vw, 46px)/1.8 Amiri, serif; color: var(--musmi-emerald); }
+.example-verse .said { color: #A5A99F; }
+.example-verse .current {
+  color: var(--musmi-ivory); background: var(--musmi-emerald);
+  border-radius: 8px; padding: 0 12px;
+}
+.demo-intro hr { width: 38px; border-color: var(--musmi-gold); margin: 6px 0; }
+.demo-intro h3 {
+  color: var(--musmi-emerald); font: 600 clamp(28px, 4vw, 38px)/1.18 var(--font-display);
+  letter-spacing: -.045em;
+}
+.demo-copy { max-width: 390px; color: #778078; font-size: 14px; line-height: 1.75; }
+.primary-btn {
+  min-height: 54px; border-radius: 9px; background: var(--musmi-emerald);
+  color: #fff; box-shadow: none; font-size: 14px; letter-spacing: .005em;
+  transition: background .18s ease, transform .18s ease;
+}
+.primary-btn:hover:not(:disabled) { background: var(--musmi-emerald-soft); }
+.primary-btn:active:not(:disabled) { transform: translateY(1px); }
+.secondary-btn {
+  min-height: 46px; border-radius: 9px; background: #F3F2EB;
+  border: 1px solid var(--musmi-line); color: var(--musmi-emerald);
+}
+.secondary-btn:hover:not(:disabled) { background: #EBEDE5; }
+.demo-note { color: #8A9189; font-size: 11px; line-height: 1.7; }
+.musabaqah-card {
+  margin-top: 18px; padding: 22px; gap: 16px; background: #F7F7F1;
+  border: 1px solid #EAE9DF; border-radius: 13px;
+}
+.musabaqah-badge { color: var(--musmi-emerald); letter-spacing: .09em; font-size: 10px; }
+.musabaqah-card > .demo-copy { max-width: none; font-size: 13px; }
+.musabaqah-label { color: #727C73; font-size: 11px; letter-spacing: .025em; }
+.control-select, .passage-form select, .passage-form input {
+  border: 1px solid #E1E3D9; border-radius: 8px; background: #FFFEFA;
+  color: var(--musmi-ink); min-height: 43px;
+}
+.control-select:focus, .passage-form select:focus, .passage-form input:focus {
+  border-color: var(--musmi-emerald); outline: 2px solid rgba(11,56,46,.12);
+}
+.musabaqah-start-btn, .imam-play-pill-btn, .mushaf-play-btn {
+  background: var(--musmi-emerald) !important; color: white;
+}
+.musabaqah-results-card { background: #EDF2EB; border: 1px solid #DFE8DE; }
+.results-badge { background: var(--musmi-emerald); }
+.place-row, .single-ayah-imam-bar { border-color: var(--musmi-line); }
+.place, .imam-badge, .mushaf-imam-badge { color: var(--musmi-emerald); }
+.mode-pill-btn {
+  border: 1px solid var(--musmi-line); border-radius: 999px;
+  background: #F7F6F0; color: var(--musmi-emerald); padding: 7px 13px;
+}
+.ayah { color: var(--musmi-emerald); font: 400 36px/1.95 Amiri, serif; padding: 20px 8px; }
+.ayah .word.current, .mushaf-word.current { background: var(--musmi-emerald); color: #fff; }
+.ayah .word.said, .mushaf-word.said { color: #A2A89F; }
+.hint { color: #7B857D; }
+.notes-wrap, .disclosure { border-color: var(--musmi-line); }
+.notes-title { color: #8B8069; font-size: 10px; letter-spacing: .12em; }
+.note { background: #FBF0ED; border-left-color: #B85F50; border-radius: 8px; }
+.note-head { color: #A64D40; }
+.mushaf-frame { border: 1px solid #E5E2D5; border-radius: 12px; background: #FBFAF3; }
+.mushaf-header, .mushaf-footer, .mushaf-imam-bar {
+  background: #F2F0E7; border-color: #E5E2D5;
+}
+.mushaf-page-content { color: #28352E; }
+.mushaf-surah, .mushaf-surah-banner { color: var(--musmi-emerald); }
+.mushaf-surah-banner { background: #EDF1E9; }
+.mushaf-basmala { color: #8D8062; }
+.disclosure summary { color: #69766D; }
+.disclosure summary:hover { color: var(--musmi-emerald); }
+.scope-note { max-width: 560px; margin: 0 auto; line-height: 1.7; }
+.colophon {
+  margin-top: 24px; padding: 18px 2px 0; border-color: var(--musmi-line);
+  color: #879087; font-size: 10px;
+}
+.colophon strong { color: var(--musmi-emerald); }
+.colophon a:hover { color: var(--musmi-emerald); }
+@media (max-width: 600px) {
+  #app { padding: 12px 14px 28px; }
+  .nav-edge { min-height: 62px; margin-bottom: 18px; padding-bottom: 13px; }
+  .wordmark > :first-child { font-size: 24px; }
+  .wordmark [lang="ar"] { font-size: 20px; }
+  nav { gap: 9px; }
+  .nav-link { font-size: 10px; }
+  .ios-status-badge { padding: 5px 8px; font-size: 9px; }
+  .bench { padding: 22px 16px; border-radius: 16px; gap: 20px; }
+  .bench::before { top: 13px; right: 17px; font-size: 20px; }
+  .demo-intro { padding: 20px 4px 12px; }
+  .example-verse { font-size: 34px; }
+  .demo-intro h3 { font-size: 30px; }
+  .musabaqah-card { padding: 16px 13px; }
+  .ayah { font-size: 29px; line-height: 1.9; }
+  .mushaf-page-content { font-size: 23px; line-height: 1.9; }
+  .colophon { align-items: flex-start; flex-direction: column; gap: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
