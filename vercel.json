@@ -4,7 +4,7 @@
   "outputDirectory": "web/frontend/dist",
   "headers": [
     {
-      "source": "/v1/runtime/ort/(.*\\\\.mjs)",
+      "source": "/v1/runtime/ort/(.*\\.mjs)",
       "headers": [
         {
           "key": "Content-Type",
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "source": "/v1/runtime/ort/(.*\\\\.wasm)",
+      "source": "/v1/runtime/ort/(.*\\.wasm)",
       "headers": [
         {
           "key": "Content-Type",
