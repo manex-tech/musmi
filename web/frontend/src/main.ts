@@ -40,10 +40,6 @@ function show(view: View) {
   passage.disabled = view === "loading" || view === "mic-pending" || view === "listening";
 }
 
-function setStatus(text: string) {
-  $("status").textContent = text;
-}
-
 // ---------------------------------------------------------------------------------------------------------------
 // Loading: the Quran display text and the engine
 
@@ -120,7 +116,6 @@ function renderTech(t: Tilawa) {
     }),
   );
   dl.dataset.backend = backend;
-  setStatus(backend.includes("webgpu") ? "On-device · WebGPU" : "On-device");
 }
 
 // ---------------------------------------------------------------------------------------------------------------
